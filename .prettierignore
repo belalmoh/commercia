@@ -1,0 +1,13 @@
+# Ignore JSON files
+*.json
+
+# Ignore YAML files
+*.yml
+*.yaml
+
+# Ignore other files you don't want formatted
+*.md
+node_modules/
+dist/
+coverage/
+.git/ 
