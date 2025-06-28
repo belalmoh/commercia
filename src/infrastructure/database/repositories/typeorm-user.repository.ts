@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../../domain/entities/user.entity';
-import { UserRepository } from '../../../domain/domain/repositories/user.repository';
+import { UserRepository } from '../../../domain/repositories/user.repository';
 import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
@@ -24,7 +24,7 @@ export class TypeOrmUserRepository implements UserRepository {
 
     async save(user: User): Promise<User> {
         const userEntity = this.toEntity(user);
-        const savedUser = await this.userEntityRepository.save(user);
+        const savedUser = await this.userEntityRepository.save(userEntity);
         return this.toDomain(savedUser);
     }
 

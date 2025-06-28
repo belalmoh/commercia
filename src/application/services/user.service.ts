@@ -1,6 +1,6 @@
 import { Injectable, ConflictException, NotFoundException, Inject } from '@nestjs/common';
 import { User } from '../../domain/entities/user.entity';
-import { UserRepository } from '../../domain/domain/repositories/user.repository';
+import { UserRepository } from '../../domain/repositories/user.repository';
 import { CreateUserDto } from '../dto/user/create-user.dto';
 import { UserResponseDto } from '../dto/user/user-response.dto';
 import { UserMapper } from '../mappers/user.mapper';
@@ -9,12 +9,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UserService {
-    constructor(private readonly userRepository: UserRepository) {}
+    constructor(@Inject('UserRepository') private readonly userRepository: UserRepository) {}
 
-    async createUser(
-        @Inject('UserRepository') userRepository: UserRepository,
-        createUserDto: CreateUserDto,
-    ): Promise<UserResponseDto> {
+    async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
         const existingUser = await this.userRepository.findByEmail(createUserDto.email);
         if (existingUser) {
             throw new ConflictException('User with this email already exists');

@@ -4,7 +4,7 @@ import { User } from '../../domain/entities/user.entity';
 import { TokenResponseDto } from '../dto/auth/token-response.dto';
 import { UserMapper } from '../mappers/user.mapper';
 import * as bcrypt from 'bcrypt';
-import { UserRepository } from 'src/domain/domain/repositories/user.repository';
+import { UserRepository } from '../../domain/repositories/user.repository';
 
 @Injectable()
 export class AuthService {

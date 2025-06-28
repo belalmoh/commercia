@@ -9,13 +9,11 @@ import { APP_GUARD, APP_FILTER } from '@nestjs/core';
 import { UserModule } from './user.module';
 import { AuthModule } from './auth.module';
 
+import { JwtStrategy } from './infrastructure/auth/jwt.strategy';
 import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
 import { HttpExceptionFilter } from './presentation/filters/http-exception.filter';
-import { JwtStrategy } from './infrastructure/auth/jwt.strategy';
 
 import { UserEntity } from './infrastructure/database/entities/user.entity';
-
-import { AppController } from './app.controller';
 
 @Module({
     imports: [
@@ -39,6 +37,7 @@ import { AppController } from './app.controller';
             }),
         }),
         JwtModule.registerAsync({
+            global: true,
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => ({
@@ -50,7 +49,7 @@ import { AppController } from './app.controller';
         UserModule,
         AuthModule,
     ],
-    controllers: [AppController],
+    controllers: [],
     providers: [
         {
             provide: APP_GUARD,

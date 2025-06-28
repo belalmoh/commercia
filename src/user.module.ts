@@ -12,7 +12,7 @@ import { UserEntity } from './infrastructure/database/entities/user.entity';
 import { TypeOrmUserRepository } from './infrastructure/database/repositories/typeorm-user.repository';
 
 // Repositories
-import { UserRepository } from './domain/domain/repositories/user.repository';
+import { UserRepository } from './domain/repositories/user.repository';
 
 @Module({
     imports: [TypeOrmModule.forFeature([UserEntity])],
