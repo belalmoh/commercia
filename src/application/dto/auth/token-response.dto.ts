@@ -6,10 +6,16 @@ export class TokenResponseDto {
     accessToken: string;
 
     @ApiProperty()
+    refreshToken: string;
+
+    @ApiProperty()
     tokenType: string;
 
     @ApiProperty()
     expiresIn: number;
+
+    @ApiProperty()
+    refreshExpiresIn: number;
 
     @ApiProperty()
     user: UserResponseDto;

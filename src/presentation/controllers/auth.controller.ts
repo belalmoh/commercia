@@ -1,9 +1,10 @@
-import { Controller, Post, Body, UnauthorizedException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException, HttpStatus, HttpCode } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from '../../application/services/auth.service';
 import { LoginDto } from '../../application/dto/auth/login.dto';
 import { TokenResponseDto } from '../../application/dto/auth/token-response.dto';
 import { Public } from '../../common/decorators/public.decorator';
+import { RefreshTokenDto } from 'src/application/dto/auth/refresh-token.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -30,5 +31,18 @@ export class AuthController {
         }
 
         return this.authService.generateToken(user);
+    }
+
+    @Post('refresh')
+    @Public()
+    @HttpCode(HttpStatus.OK)
+    @ApiOperation({ summary: 'Refresh access token' })
+    @ApiResponse({
+        status: HttpStatus.OK,
+        description: 'Token refreshed successfully',
+        type: TokenResponseDto,
+    })
+    async refreshAccessToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<TokenResponseDto> {
+        return this.authService.refreshAccessToken(refreshTokenDto);
     }
 }

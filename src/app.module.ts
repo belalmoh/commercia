@@ -33,7 +33,7 @@ import { UserEntity } from './infrastructure/database/entities/user.entity';
                 database: configService.get('DATABASE_NAME'),
                 entities: [UserEntity], // Add all entities here
                 synchronize: configService.get('NODE_ENV') === 'development', // Only in dev!
-                logging: configService.get('NODE_ENV') === 'development',
+                // logging: configService.get('NODE_ENV') === 'development',
             }),
         }),
         JwtModule.registerAsync({
