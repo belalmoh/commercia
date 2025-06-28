@@ -23,10 +23,12 @@
     "migration:revert": "typeorm-ts-node-commonjs migration:revert"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^9.0.2",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
     "@nestjs/cqrs": "^11.0.3",
+    "@nestjs/elasticsearch": "^11.1.0",
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
