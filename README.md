@@ -4,6 +4,8 @@
 
 This is a digital marketplace for Commeria. It is a web application that allows users to buy and sell products.
 
+Architecture is based on Clean Architecture and Domain Driven Design. Using Wire for dependency injection.
+
 ## Features
 
 - User authentication
