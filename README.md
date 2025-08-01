@@ -38,3 +38,19 @@ src/internal/infrastructure/[infrastructure_name] (e.g. postgres, redis, rabbitm
 ### Presentation for web interface
 src/internal/presentation/controllers
 src/internal/presentation/middlewares
+
+## Run the project
+
+```bash
+go install github.com/air-verse/air@latest # install air for hot reload
+go mod download # download dependencies
+go mod tidy # tidy up dependencies
+air # run the project with hot reload
+```
+
+## Build and run the project
+
+```bash
+go build -o ./tmp/main ./src/cmd/main # build the project
+./tmp/main # run the project
+```
