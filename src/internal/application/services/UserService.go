@@ -22,10 +22,10 @@ func NewUserService(userRepository repositories.UserRepository) *UserService {
 
 // ------------------------------------------------------------
 
-func (s *UserService) CreateUser(ctx context.Context, req *user.CreateUserRequest) (*entities.User, error) {
+func (s *UserService) CreateUser(ctx context.Context, req *user.CreateUserRequest) (*user.CreateUserResponse, error) {
 	existingUser, err := s.userRepository.FindByEmail(ctx, req.Email)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error finding user by email: %w", err)
 	}
 
 	if existingUser != nil {
@@ -34,20 +34,26 @@ func (s *UserService) CreateUser(ctx context.Context, req *user.CreateUserReques
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error generating password hash: %w", err)
 	}
 
-	user := &entities.User{
-		FirstName: req.FirstName,
-		LastName:  req.LastName,
-		Email:     req.Email,
-		Password:  string(hashedPassword),
+	newUser := &entities.User{
+		Name:     req.Name,
+		Email:    req.Email,
+		Password: string(hashedPassword),
 	}
 
-	_, err = s.userRepository.Create(ctx, user)
+	createdUser, err := s.userRepository.Create(ctx, newUser)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error creating user: %w", err)
 	}
 
-	return user, nil
+	// Return only safe fields
+	response := &user.CreateUserResponse{
+		ID:    createdUser.ID,
+		Name:  createdUser.Name,
+		Email: createdUser.Email,
+	}
+
+	return response, nil
 }

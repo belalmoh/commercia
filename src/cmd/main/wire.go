@@ -16,7 +16,7 @@ import (
 func InitServer() *server.Server {
 	wire.Build(
 		database.NewConnection,
-		repositories.NewGormUserRepository,
+		repositories.NewUserRepository,
 		server.NewGinEngine,
 		server.NewServer,
 		presentation.NewRouter,

@@ -4,21 +4,35 @@ import (
 	"fmt"
 	"os"
 
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq" // PostgreSQL driver
 )
 
-func NewConnection() *gorm.DB {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		os.Getenv("DATABASE_HOST"),
+type Connection struct {
+	db *sqlx.DB
+}
+
+func (c *Connection) GetDB() *sqlx.DB {
+	return c.db
+}
+
+func NewConnection() *Connection {
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		os.Getenv("DATABASE_USERNAME"),
 		os.Getenv("DATABASE_PASSWORD"),
-		os.Getenv("DATABASE_NAME"),
+		os.Getenv("DATABASE_HOST"),
 		os.Getenv("DATABASE_PORT"),
+		os.Getenv("DATABASE_NAME"),
 	)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := sqlx.Connect("postgres", dsn)
 	if err != nil {
-		panic("failed to connect database: " + " dsn: " + dsn)
+		panic("failed to open database connection: " + err.Error() + " dsn: " + dsn)
 	}
-	return db
+
+	// Test the connection
+	if err := db.Ping(); err != nil {
+		panic("failed to ping database: " + err.Error() + " dsn: " + dsn)
+	}
+
+	return &Connection{db: db}
 }

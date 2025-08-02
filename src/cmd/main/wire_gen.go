@@ -19,8 +19,9 @@ import (
 
 func InitServer() *server.Server {
 	engine := server.NewGinEngine()
-	db := database.NewConnection()
-	userRepository := repositories.NewGormUserRepository(db)
+	connection := database.NewConnection()
+	db := connection.GetDB()
+	userRepository := repositories.NewUserRepository(db)
 	userService := services.NewUserService(userRepository)
 	userController := controllers.NewUserController(userService)
 	router := presentation.NewRouter(userController)
