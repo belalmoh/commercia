@@ -14,5 +14,6 @@ func NewRouter(userController *controllers.UserController) *Router {
 }
 
 func (r *Router) With(engine *gin.Engine) {
-	engine.POST("/users", r.userController.CreateUser)
+	engine.POST("/auth/register", r.userController.CreateUser)
+	engine.POST("/auth/login", r.userController.LoginUser)
 }

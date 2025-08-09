@@ -8,21 +8,14 @@ type CreateUserRequest struct {
 	Password string `json:"password" validate:"required,min=6"`
 }
 
-type CreateUserResponse struct {
-	ID    uuid.UUID `json:"id"`
-	Name  string    `json:"name"`
-	Email string    `json:"email"`
-}
-
-type UserLoginRequest struct {
+type LoginUserRequest struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required,min=6"`
 }
 
-type UserLoginResponse struct {
+type LoginUserResponse struct {
 	ID           uuid.UUID `json:"id"`
-	FirstName    string    `json:"first_name"`
-	LastName     string    `json:"last_name"`
+	Name         string    `json:"name"`
 	Email        string    `json:"email"`
 	AccessToken  string    `json:"access_token"`
 	RefreshToken string    `json:"refresh_token"`

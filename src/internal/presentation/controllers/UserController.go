@@ -18,8 +18,6 @@ func NewUserController(userService *services.UserService) *UserController {
 }
 
 func (c *UserController) CreateUser(ctx *gin.Context) {
-	println("CreateUser controller called") // Debug log
-
 	decoder := json.NewDecoder(ctx.Request.Body)
 	decoder.DisallowUnknownFields()
 
@@ -29,14 +27,30 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 		return
 	}
 
-	println("About to call userService.CreateUser") // Debug log
-	createdUser, err := c.userService.CreateUser(ctx, &req)
+	err := c.userService.CreateUser(ctx, &req)
 	if err != nil {
-		println("UserService error:", err.Error()) // Debug log
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	println("User created successfully") // Debug log
-	ctx.JSON(http.StatusOK, gin.H{"message": "User created successfully", "body": createdUser})
+	ctx.JSON(http.StatusCreated, gin.H{"message": "User created successfully"})
+}
+
+func (c *UserController) LoginUser(ctx *gin.Context) {
+	decoder := json.NewDecoder(ctx.Request.Body)
+	decoder.DisallowUnknownFields()
+
+	var req user.LoginUserRequest
+	if err := decoder.Decode(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	loginUser, err := c.userService.LoginUser(ctx, &req)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "User logged in successfully", "body": loginUser})
 }
