@@ -8,12 +8,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/belalmoh/commercia/src/internal/domain/entities"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 )
 
-func GenerateAccessToken(userID string) (string, error) {
+func GenerateAccessToken(userID string, role entities.UserAccountRole) (string, error) {
 	jwtSecret := os.Getenv("JWT_SECRET")
 	if jwtSecret == "" {
 		return "", fmt.Errorf("JWT_SECRET is not set")
@@ -31,14 +32,15 @@ func GenerateAccessToken(userID string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": userID,
-		"exp": time.Now().Add(time.Duration(expiresIn) * time.Hour).Unix(),
+		"sub":  userID,
+		"role": role,
+		"exp":  time.Now().Add(time.Duration(expiresIn) * time.Hour).Unix(),
 	})
 
 	return token.SignedString([]byte(jwtSecret))
 }
 
-func GenerateRefreshToken(userID string) (string, error) {
+func GenerateRefreshToken(userID string, role entities.UserAccountRole) (string, error) {
 	jwtSecret := os.Getenv("JWT_REFRESH_SECRET")
 	if jwtSecret == "" {
 		return "", fmt.Errorf("JWT_SECRET is not set")
@@ -56,8 +58,9 @@ func GenerateRefreshToken(userID string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": userID,
-		"exp": time.Now().Add(time.Duration(expiresIn) * time.Hour * 24).Unix(),
+		"sub":  userID,
+		"role": role,
+		"exp":  time.Now().Add(time.Duration(expiresIn) * time.Hour * 24).Unix(),
 	})
 
 	return token.SignedString([]byte(jwtSecret))

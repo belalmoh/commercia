@@ -1,7 +1,13 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TYPE user_account_type AS ENUM ('buyer', 'seller', 'both');
+-- +goose StatementEnd
 
+-- +goose StatementBegin
+CREATE TYPE user_account_role AS ENUM ('user', 'admin', 'superadmin');
+-- +goose StatementEnd
+
+-- +goose StatementBegin
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
@@ -13,6 +19,7 @@ CREATE TABLE users (
 
     -- account status & type
     account_type user_account_type NOT NULL DEFAULT 'buyer',
+    role user_account_role NOT NULL DEFAULT 'user',
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     
     -- verification status
@@ -40,13 +47,18 @@ CREATE TABLE users (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- +goose StatementEnd
+
+-- +goose StatementBegin
 -- Indexes for performance
 CREATE INDEX idx_users_email ON users(email) WHERE deleted_at IS NULL;
 CREATE INDEX idx_users_phone ON users(phone_number) WHERE deleted_at IS NULL;
 CREATE INDEX idx_users_sellers ON users(account_type) WHERE account_type = 'seller' AND deleted_at IS NULL;
 CREATE INDEX idx_users_active ON users(is_active, deleted_at);
 CREATE INDEX idx_users_password_reset ON users(password_reset_token) WHERE password_reset_token IS NOT NULL;
+-- +goose StatementEnd
 
+-- +goose StatementBegin
 -- Add updated_at trigger
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -60,7 +72,6 @@ CREATE TRIGGER update_users_updated_at
     BEFORE UPDATE ON users 
     FOR EACH ROW 
     EXECUTE FUNCTION update_updated_at_column();
-
 -- +goose StatementEnd
 
 -- +goose Down
@@ -69,4 +80,5 @@ DROP TRIGGER IF EXISTS update_users_updated_at ON users;
 DROP FUNCTION IF EXISTS update_updated_at_column();
 DROP TABLE users;
 DROP TYPE IF EXISTS user_account_type;
+DROP TYPE IF EXISTS user_account_role;
 -- +goose StatementEnd

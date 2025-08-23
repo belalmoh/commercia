@@ -42,6 +42,7 @@ func (s *UserService) CreateUser(ctx context.Context, req *user.CreateUserReques
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: string(hashedPassword),
+		Role:     entities.AccountRoleUser,
 	}
 
 	_, err = s.userRepository.Create(ctx, newUser)
@@ -66,12 +67,12 @@ func (s *UserService) LoginUser(ctx context.Context, req *user.LoginUserRequest)
 		return nil, fmt.Errorf("invalid password")
 	}
 
-	accessToken, err := auth.GenerateAccessToken(existingUser.ID.String())
+	accessToken, err := auth.GenerateAccessToken(existingUser.ID.String(), existingUser.Role)
 	if err != nil {
 		return nil, fmt.Errorf("error generating access token: %w", err)
 	}
 
-	refreshToken, err := auth.GenerateRefreshToken(existingUser.ID.String())
+	refreshToken, err := auth.GenerateRefreshToken(existingUser.ID.String(), existingUser.Role)
 	if err != nil {
 		return nil, fmt.Errorf("error generating refresh token: %w", err)
 	}

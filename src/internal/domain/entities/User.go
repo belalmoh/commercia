@@ -7,11 +7,18 @@ import (
 )
 
 type UserAccountType string
+type UserAccountRole string
 
 const (
 	AccountTypeBuyer  UserAccountType = "buyer"
 	AccountTypeSeller UserAccountType = "seller"
 	AccountTypeBoth   UserAccountType = "both"
+)
+
+const (
+	AccountRoleUser       UserAccountRole = "user"
+	AccountRoleAdmin      UserAccountRole = "admin"
+	AccountRoleSuperadmin UserAccountRole = "superadmin"
 )
 
 type User struct {
@@ -23,6 +30,7 @@ type User struct {
 
 	// Account status & type
 	AccountType UserAccountType `json:"account_type" db:"account_type"`
+	Role        UserAccountRole `json:"role" db:"role"`
 	IsActive    bool            `json:"is_active" db:"is_active"`
 
 	// Verification status
